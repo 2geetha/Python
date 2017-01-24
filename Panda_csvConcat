@@ -1,0 +1,15 @@
+import os
+import pandas as pd
+#two csv files of same number of rows, but differnt columns.
+#merge two into one combined csv
+#resultant will have same number of rows as original but with columns concatenated
+#using pandas
+os.chdir('C://Users//python')
+data_files=['train.csv','train_label.csv']
+train= pd.read_csv(data_files[0]) # read to dataframe
+label= pd.read_csv(data_files[1])
+print train.shape
+print label.shape
+result = pd.concat([label,train],axis=1) # axis=1 for column concat
+print result.shape
+result.to_csv('train_label_combined.csv', index= False)
