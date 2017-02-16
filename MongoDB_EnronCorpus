@@ -1,0 +1,125 @@
+from pymongo import MongoClient 
+import pandas as pd 
+from datetime import datetime 
+from pandas.io.json import json_normalize
+import re
+import collections
+
+#connect to mongo DB
+my_netid = raw_input('Enter your NetID: ')
+my_password = raw_input('Enter your password: ')
+
+try:    
+    client = MongoClient("129.105.208.225")
+    client.enron.authenticate(my_netid, my_password,source='$external', mechanism='PLAIN') 
+    print('\nConnected to MongoDB enron database\n')    
+    success = True    
+except:
+    print('\nUnable to connect to the enron database')
+    
+#get messages document from enron DB
+workdocs = client.enron.messages
+
+#select messages that include Ken Lay
+selectdocs= list(workdocs.find({'$or':\
+[{'headers.X-From':{"$in":['Kenneth Lay', 'Ken Lay','klay@enron.com','kenneth.lay@enron.com']}},\
+{'headers.X-To':{"$in":['Kenneth Lay', 'Ken Lay','klay@enron.com','kenneth.lay@enron.com']}},\
+{'headers.To':{"$in":['Kenneth Lay', 'Ken Lay','klay@enron.com','kenneth.lay@enron.com']}},\
+{'headers.From':{"$in":['Kenneth Lay', 'Ken Lay','klay@enron.com','kenneth.lay@enron.com']}},\
+{'headers.X-bcc':{"$in":['Kenneth Lay', 'Ken Lay','klay@enron.com','kenneth.lay@enron.com']}},\
+{'headers.X-cc':{"$in":['Kenneth Lay', 'Ken Lay','klay@enron.com','kenneth.lay@enron.com']}}]})) 
+
+print (len(selectdocs))
+
+#convert into data frame
+enron_messages_df = json_normalize(selectdocs)
+
+del enron_messages_df['_id']
+## rename columns of interest for simplicity
+enron_messages_df.rename(columns={'headers.Date':'Date', \
+'headers.From':'From','headers.Message-ID':'Message-ID', \
+'headers.Subject':'Subject','headers.To':'To', \
+'headers.X-From':'X-From','headers.X-To':'X-To', \
+'headers.X-bcc':'X-bcc','headers.X-cc':'X-cc'},inplace=True)
+
+#1. message count from,to,cc, bcc Ken Lay
+emails= ['Kenneth Lay', 'Ken Lay','klay@enron.com','kenneth.lay@enron.com']
+
+#from Ken Lay   
+df_from = enron_messages_df[(enron_messages_df['From'].str.contains(emails[0]))|\
+(enron_messages_df['From'].str.contains(emails[1]))|\
+(enron_messages_df['From'].str.contains(emails[2]))|\
+(enron_messages_df['From'].str.contains(emails[3]))]
+
+df_Xfrom = enron_messages_df[(enron_messages_df['X-From'].str.contains(emails[0]))|\
+(enron_messages_df['X-From'].str.contains(emails[1]))|\
+(enron_messages_df['X-From'].str.contains(emails[2]))|\
+(enron_messages_df['X-From'].str.contains(emails[3]))]
+
+df_fromMerge= pd.merge(df_from,df_Xfrom,how='outer')
+print ('Message count from Ken Lay: '+ str(len(df_fromMerge)))
+
+#to Ken Lay 
+df_to = enron_messages_df[(enron_messages_df['To'].str.contains(emails[0]))|\
+(enron_messages_df['To'].str.contains(emails[1]))|\
+(enron_messages_df['To'].str.contains(emails[2]))|\
+(enron_messages_df['To'].str.contains(emails[3]))]
+
+df_Xto = enron_messages_df[(enron_messages_df['X-To'].str.contains(emails[0]))|\
+(enron_messages_df['X-To'].str.contains(emails[1]))|\
+(enron_messages_df['X-To'].str.contains(emails[2]))|\
+(enron_messages_df['X-To'].str.contains(emails[3]))]
+
+df_toMerge= pd.merge(df_to,df_Xto,how='outer')
+print ('Message count to Ken Lay: '+ str(len(df_toMerge)))
+
+#bcc Ken Lay 
+df_Xbcc = enron_messages_df[(enron_messages_df['X-bcc'].str.contains(emails[0]))|\
+(enron_messages_df['X-bcc'].str.contains(emails[1]))|\
+(enron_messages_df['X-bcc'].str.contains(emails[2]))|\
+(enron_messages_df['X-bcc'].str.contains(emails[3]))]
+print ('Message count bcc Ken Lay: '+ str(len(df_Xbcc)))
+
+#cc Ken Lay 
+df_Xcc = enron_messages_df[(enron_messages_df['X-cc'].str.contains(emails[0]))|\
+(enron_messages_df['X-cc'].str.contains(emails[1]))|\
+(enron_messages_df['X-cc'].str.contains(emails[2]))|\
+(enron_messages_df['X-cc'].str.contains(emails[3]))]
+print ('Message count cc Ken Lay: '+ str(len(df_Xcc)))
+
+#2. who did Ken Lay receive most emails from
+df_toMerge.From.value_counts().head(1)
+
+#2. who did Key Lay send most emails to
+lstTo= df_fromMerge.To.tolist()
+joinTo= ','.join(lstTo)
+lstStr= joinTo.split(',') #split the elements into individual strings
+lstEmails= [x.strip() for x in lstStr] # remove spaces from each item
+ctrEmails=collections.Counter(lstEmails) # count the frequency of items in the list
+ctrEmails.most_common(10)
+#ctrEmails.most_common(1) # sort descending- get top 1
+#test
+#df_test= df_fromMerge[6:9]
+#a1= df_test.To.tolist()
+#a2= ','.join(a1)
+#a3= a2.split(',')
+#a4= [x.strip() for x in a3]
+#a5=collections.Counter(a4)
+#a5.most_common()
+
+#3.volume of mails from Ken Lay before & after bankruptcy
+def conv_time(date_in_string):
+    date_in= date_in_string.strip()[:16]
+    try:
+        return datetime.strptime(date_in,"%a, %d %b %Y")
+    except:
+            return(None)
+bankruptcy_time = conv_time("Sun, 2 Dec 2001")
+df_fromMerge.Date= df_fromMerge['Date'].apply(lambda date: conv_time(date))
+mails_aft_bankruptcy = (df_fromMerge.Date > bankruptcy_time).sum()
+mails_bfr_bankrupty = df_fromMerge.Date.count()- mails_aft_bankruptcy
+
+#4 messages containing Arthur Andersen in the body of messages
+message_arthur=enron_messages_df[(enron_messages_df.body.str.contains('ARTHUR', flags= re.IGNORECASE))|\
+(enron_messages_df.body.str.contains('ANDERSEN', flags= re.IGNORECASE))]
+print ('Message containing Arthur Andersen: '+ str(len(message_arthur)))
