@@ -1,0 +1,72 @@
+import pandas as pd
+import numpy as np
+import os
+
+os.chdir('C://Users//gethaal//Python_Learning//420_Asst4')
+
+
+data_files= ['2014_passenger_rawdata.csv','A2010_14.txt',]
+df_passenger = pd.read_csv(data_files[0],thousands=',')
+df_incidents= pd.read_csv(data_files[1],sep='\t')
+
+airports_interested=['BOS','MDW','FLL','MIA','LAX']
+
+def totalPassengers(airport,depart_status=True):
+    
+    if depart_status==True:
+        df_passenger_airport =df_passenger[df_passenger.OriginApt==airport]
+    else:
+        df_passenger_airport=df_passenger[df_passenger.DestApt==airport]
+    
+    # prints the carrier which carries more passengers for each airport
+    print airport + ':  '+str(df_passenger_airport.groupby('Carrier').Total.sum().sort_values(ascending = False)[:1])
+    
+    if depart_status== True:
+        # prints the popular destination for each airport
+        print 'popular destination for ' +airport + ':  '+str(df_passenger_airport.groupby('DestApt').Total.sum().sort_values(ascending = False)[:1])
+    else:
+        # prints the popular origin for each destination airport
+        print 'popular origin for destination ' +airport + ':  '+str(df_passenger_airport.groupby('OriginApt').Total.sum().sort_values(ascending = False)[:1])
+    return df_passenger_airport.Total.sum()
+        
+# false - works with DestApt; True - for OriginApt
+dict_orig_passengers={}
+dict_dest_passengers={}
+for apt in airports_interested:
+    dict_orig_passengers[apt]=totalPassengers(apt,True)
+    dict_dest_passengers[apt]=totalPassengers(apt,False)
+    print 'Origin Airport- '+ apt+' passenger count: '+ str(dict_orig_passengers[apt])
+    print 'Destn Airport- '+ apt+' passenger count: '+ str(dict_dest_passengers[apt])
+print 'Airport with max passengers flying out:' + max(dict_orig_passengers, key=dict_orig_passengers.get)
+print 'Airport with min passengers flying in:' + max(dict_dest_passengers, key=dict_dest_passengers.get) 
+
+#number of accidents or incidents that occurred in these airports between 2010 and 2014 inclusive, according to the FAA. 
+#number of deaths that occurred in each event for each of these five airports.
+#subsetting the dataframe with interested columns
+df_sub=df_incidents[['c1','c143','c63','c66','c70','c72','c74','c76','c78','c77']]
+
+# print the number of incidents/accidents for each airport
+# & number of deaths for each incident in each airport
+
+df_sub_bos= df_sub[df_sub.c143.str.strip().isin(['BOS','KBOS'])]
+print df_sub_bos['c143'].value_counts()
+
+df_sub_mdw= df_sub[df_sub.c143.str.strip().isin(['MDW','KMDW'])]
+print df_sub_mdw['c143'].value_counts()
+#df_sub_mdw['deaths']= df_sub_mdw[columns_deaths].sum(axis=1)
+
+df_sub_fll= df_sub[df_sub.c143.str.strip().isin(['FLL','KFLL'])]
+print df_sub_fll['c143'].value_counts()
+
+df_sub_mia= df_sub[df_sub.c143.str.strip().isin(['MIA','KMIA'])]
+print df_sub_mia['c143'].value_counts()
+
+df_sub_lax= df_sub[df_sub.c143.str.strip().isin(['LAX','KLAX'])]
+print df_sub_lax['c143'].value_counts()
+
+ # Top ten causes of 2010-2014 incidents and accidents are for all events resulting in deaths.
+
+df_cause= df_sub.pivot_table('c76', index=['c78','c77'],aggfunc=np.sum)
+#df_cause= df_sub.pivot_table('c76', index=['c78'],aggfunc=np.sum)
+
+df_cause.sort_values(ascending=False).head(11)
