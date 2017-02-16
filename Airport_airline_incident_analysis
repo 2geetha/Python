@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 
-os.chdir('C://Users//gethaal//Python_Learning//420_Asst4')
+os.chdir('C://Users//Python_Learning//passenger')
 
 
 data_files= ['2014_passenger_rawdata.csv','A2010_14.txt',]
