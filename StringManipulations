@@ -1,0 +1,28 @@
+string_orig="Sally Sells Seashells by the Seashore"
+words = string_orig.split(' ') # split the words by space
+#1. Sells Seashells by the Seashore
+string_1= string_orig.lstrip(words[0]).lstrip() 
+print '1 : %r'% string_1 
+ #2. Sally Sells Seashells 
+string_2=' '.join(words[:3]) # join the words using space separator
+print '2 : %r'%string_2
+#4.Seashore the by Seashells Sells Sally
+string_3=''
+for w in words:
+    string_3= w+' '+string_3
+print '3 : %r'%string_3.strip()
+
+#4. erohsaeS eht yb sllehsaeS slleS yllaS
+#5.yllaS slleS sllehsaeS yb eht erohsaeS
+string_4=''
+string_5=''
+for w in words:
+    l= len(w)
+    r_w=''
+    for i in range(0,l):
+        r_w=w[i]+r_w   # reverse the letters in each word
+    string_4=string_4+' '+r_w #reverse the word order
+    string_5= r_w+' '+string_5
+print '4 : %r'%string_4.strip()
+print '5 : %r'%string_5.strip()
+        
