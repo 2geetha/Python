@@ -23,7 +23,6 @@ stoplist = ['js','the','of','to','and','in','it','its',\
     'not','nor','at','why','your','on','off',\
     'url','png','jpg','jpeg','gif','hover','em','px','pdf',\
     'header','footer','padding','before','after','ie','tm']
-
 # web page parsing function for creating text document 
 def page_parse(string):
     # replace non-alphanumeric with space 
