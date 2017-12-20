@@ -1,11 +1,3 @@
-# This program demonstrates the capabilities of Python
-# for processing text... data munging. The typical web
-# page contains tagged text, references to css formatting,
-# and calls to JavaScript programs. Extracting meaningful
-# text from web pages is a big job... a job made easier
-# with the capabilities of Python modules re for regular
-# expressions and Beautiful Soup for html text parsing.
-
 # Bring in Python modules for file and text manipulation
 from bs4 import BeautifulSoup  # DOM html manipulation
 import os  # operating system commands
@@ -56,17 +48,17 @@ def page_parse(string):
 nfiles = 0
 # identify all of the directory names 
 dir_names = [name for name in 
-    os.listdir('C:/Users/Geetha/MSPA/452_WebAndNetworkDataScience/Assignments/000_python_web_page_parsing/000_python_web_page_parsing/452_Session7_Individual_Assignment_Data/')
-    if os.path.isdir(os.path.join('C:/Users/Geetha/MSPA/452_WebAndNetworkDataScience/Assignments/000_python_web_page_parsing/000_python_web_page_parsing/452_Session7_Individual_Assignment_Data/', name))]
+    os.listdir('C:/Users/data_parsing/')
+    if os.path.isdir(os.path.join('C:/Users/data_parsing/', name))]
 print('\nInput Directory Names')   
 # create a directory for the results... called results
-os.mkdir('C:/Users/Geetha/MSPA/452_WebAndNetworkDataScience/Assignments/000_python_web_page_parsing/000_python_web_page_parsing/' + 'resultsTry') 
+os.mkdir('C:/Users/data_parsing/' + 'resultsTry') 
 print(dir_names)
 for input_dir in dir_names:
     # indentify all html files in this directory
     html_names = None  # initialize file name list for this directory
     html_names = [name for name in 
-        os.listdir(os.path.join('C:/Users/Geetha/MSPA/452_WebAndNetworkDataScience/Assignments/000_python_web_page_parsing/000_python_web_page_parsing/452_Session7_Individual_Assignment_Data/', input_dir)) 
+        os.listdir(os.path.join('C:/Users/data_parsing/', input_dir)) 
         if name.endswith('.html')]
     print('\nWorking on directory: ')
     print(input_dir)
@@ -74,7 +66,7 @@ for input_dir in dir_names:
     # work on files one at a time
     for input_file in html_names:
         # read in the html file
-        this_dir = os.path.join('C:/Users/Geetha/MSPA/452_WebAndNetworkDataScience/Assignments/000_python_web_page_parsing/000_python_web_page_parsing/452_Session7_Individual_Assignment_Data/', input_dir)
+        this_dir = os.path.join('C:/Users/data_parsing/', input_dir)
         with open(os.path.join(this_dir, input_file),'r') as my_html:
             my_stuff = BeautifulSoup(my_html)
             
@@ -93,7 +85,7 @@ for input_dir in dir_names:
             # write text to new files with extension .txt
             blog_id = re.sub('nodejs_opinion_crawler_v', 'blog_', input_dir) 
             output_file_name = blog_id + '_' + re.sub('.html', '.txt', input_file)
-            output_file = 'C:/Users/Geetha/MSPA/452_WebAndNetworkDataScience/Assignments/000_python_web_page_parsing/000_python_web_page_parsing/resultsTry/' + output_file_name
+            output_file = 'C:/Users/data_parsing/' + output_file_name
             with open(output_file, 'wt') as f:
                 f.write(str(my_document))
                 nfiles = nfiles + 1
