@@ -1,9 +1,6 @@
 # prepare for Python version 3x features and functions
 from __future__ import division, print_function
 
-import os  # operating system commands
-os.chdir('C://Users//Geetha//Python_Learning//452_networkScience//Assignments//AutomaticDataAcquisition')
-
 import scrapy  # object-oriented framework for crawling and scraping
 
 # function for walking and printing directory structure
