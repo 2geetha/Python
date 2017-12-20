@@ -2,8 +2,6 @@
 # agent-based simulation experiment with analysis of deviance
 # simulation run with NetLogo model Virus on a Network
 
-# run the program in Enthought Canopy, setting the working directory
-# to be the same directory as the edited file and the experimental data
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
