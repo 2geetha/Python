@@ -17,7 +17,7 @@ from nltk.corpus import PlaintextCorpusReader
 from numpy import *  # for array calculations
 
 # create lists of positive and negative words using Hu and Liu (2004) lists
-my_directory = 'C:/Users/Geetha/Python_Learning/452_networkScience/Assignments/SentimentAnalysisOnDataFromWeb/'
+my_directory = 'C:/Users/SentimentAnalysisOnDataFromWeb/'
 positive_list = PlaintextCorpusReader(my_directory, 'Hu_Liu_positive_word_list.txt')
 negative_list = PlaintextCorpusReader(my_directory, 'Hu_Liu_negative_word_list.txt')
 positive_words = positive_list.words()
@@ -57,7 +57,7 @@ def score_negative(text):
     return 100 * len(negative)/len(total)
 
 for ifile in range(len(file_names)):
-    this_file_name = 'C:/Users/Geetha/Python_Learning/452_networkScience/Assignments/SentimentAnalysisOnDataFromWeb/ParseResults/' + file_names[ifile]
+    this_file_name = 'C:/Users/SentimentAnalysisOnDataFromWeb/ParseResults/' + file_names[ifile]
     with open(this_file_name, 'rt') as f:
         this_file_text = f.read()
         print (file_names[ifile])
