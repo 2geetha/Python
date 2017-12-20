@@ -1,10 +1,4 @@
-# This program goes on to demonstrate additional text
-# processing capabilities of Python. Here we gather up
-# text from 297 blog pages dealing with web analytics,
-# creating a single corpus for analysis. We imagine
-# that we want to assess the overall sentiment about Google.
 
-# let's make our program compatible with Python 3.0/1/2/3
 from __future__ import division, print_function
 from future_builtins import ascii, filter, hex, map, oct, zip
 
@@ -38,9 +32,8 @@ file_names =  os.listdir(my_directory + '/ParseResults/')
 nfiles = len(file_names)  # nfiles should be 297
 
 # Create a single blog corpus by combining the files.
-# Use ten divider words between the files. Our reason
-# for doing this will become clear as we move to the 
-# sentiment analysis portion of this program.
+# Use ten divider words between the files. 
+
 textdivider = 10 * 'xxxxxxxx '  
 blogstring = textdivider  # initialize corpus as string of words
 
