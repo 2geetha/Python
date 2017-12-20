@@ -7,14 +7,7 @@ import re  # regular expressions
 # carriage-returns, line-feeds, tabs
 codelist = ['\r', '\n', '\t']    
 
-# there are certain words we will ignore in subsequent
-# text processing... these are called stop-words 
-# and they consist of prepositions, pronouns, and 
-# conjunctions, interrogatives, ...
-# there are also extensions and character strings 
-# common to web pages that we will ingore
-# note that many additional words and character strings
-# could be added to this list....
+
 stoplist = ['js','the','of','to','and','in','it','its',\
     'they','their','we','us','our','you','me','mine','my',\
     'for','by','with','within','about','between','from',\
