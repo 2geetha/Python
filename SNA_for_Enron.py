@@ -1,7 +1,5 @@
 # Visualizing Enron Network (Python)
 
-# jump-start code developed by Tom Miller
-
 # prepare for Python version 3x features and functions
 from __future__ import division, print_function
 
@@ -14,14 +12,6 @@ import networkx as nx
 import os
 import matplotlib.pyplot as plt  # 2D plotting
 
-# ---------------------------------------------
-# read in network edge list
-# Entron from-node and to-node email addresses
-# ---------------------------------------------
-# read Enron edge data creating a NetworkX directed graph object g
-# note use of blank text lines between edge lines in input file
-
-#os.chdir('C://Users//Geetha\\MSPA\\452_WebAndNetworkDataScience\\452_Assignment_3_Option_2')
 
 f = open('toWithLay.txt', 'rb')
 #f = open('toWithLay.csv', 'rb')
@@ -105,14 +95,3 @@ nx.draw(hub_small_ego,pos,node_color='b',node_size=50,with_labels=False)
 nx.draw_networkx_nodes(hub_small_ego,pos,nodelist=[smallest_hub],node_size=50,node_color='r', with_labels=False,radius=1)
 plt.savefig('ego_small_graph.png')
 plt.show()
-# options for visualization
-# a static plot with many nodes and edges may not be especially informative
-# so we look for alternatives... Gephi provides interactive network plots 
-# dump the graph object in GraphML format for input to Gephi
-nx.write_graphml(g,'wiki_data_to_gephi.graphml')
-
-# Gephi is open-source GUI for exploring networks... it depends on Java.
-# We need to install Gephi software first
-# Gephi download and documentation site: http://gephi.github.io/
-# Note that if your version of Java does not match up with Gephi,
-# you may have difficulties running this program.
