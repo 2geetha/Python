@@ -13,20 +13,6 @@ def list_all(current_directory):
         for f in files:
             print('{}{}'.format(subindent, f))
 
-
-# initial directory should have this form (except for items beginning with .):
-#    sads_exhibit_11_1
-#        run_one_site_crawler.py
-#        scrapy.cfg
-#        scrapy_application/
-#            __init__.py
-#            items.py
-#            pipelines.py
-#            settings.py
-#            spiders
-#                __init__.py
-#                one_site_crawler.py
-
 # examine the directory structure
 current_directory = os.getcwd()
 list_all(current_directory)
